@@ -1,24 +1,25 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import "./App.css";
+import { Home } from "./containers/Home";
+import { MyAppBar } from "./containers/MyAppBar";
+import { MyFooter } from "./containers/MyFooter";
 
 class App extends Component {
+  state = {
+    ninjas: [
+      { name: "Kelly", age: "26", belt: "black", id: "1" },
+      { name: "Test", age: "27", belt: "blue", id: "2" },
+      { name: "Test2", age: "28", belt: "green", id: "3" }
+    ]
+  };
+
   render() {
     return (
       <div className="App">
         <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
+          <MyAppBar />
+          <Home />
+          <MyFooter />
         </header>
       </div>
     );
