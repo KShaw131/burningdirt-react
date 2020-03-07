@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./App.css";
 import { Home } from "./containers/Home";
-import { MyAppBar } from "./containers/MyAppBar";
+import { MyAppBar } from "./components/MyAppBar";
 import { MyFooter } from "./components/MyFooter";
 
 class App extends Component {
