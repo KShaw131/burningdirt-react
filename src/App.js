@@ -2,16 +2,10 @@ import React, { Component } from "react";
 import "./App.css";
 import { Home } from "./containers/Home";
 import { MyAppBar } from "./containers/MyAppBar";
-import { MyFooter } from "./containers/MyFooter";
+import { MyFooter } from "./components/MyFooter";
 
 class App extends Component {
-  state = {
-    ninjas: [
-      { name: "Kelly", age: "26", belt: "black", id: "1" },
-      { name: "Test", age: "27", belt: "blue", id: "2" },
-      { name: "Test2", age: "28", belt: "green", id: "3" }
-    ]
-  };
+  state = {};
 
   render() {
     return (
