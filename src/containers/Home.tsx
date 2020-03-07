@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
@@ -10,6 +10,7 @@ import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import { Header } from "./../components/Header";
+import axios from "axios";
 
 const useStyles = makeStyles(theme => ({
   icon: {
@@ -39,8 +40,16 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+type InstagramPost = {
+  id: string;
+  caption: string;
+  image: string;
+};
+
 export const Home = () => {
   const styles = useStyles();
+  const [data, setData] = useState(Array<InstagramPost>());
+
   const state = {
     cards: [
       {
@@ -48,21 +57,36 @@ export const Home = () => {
         image: "https://source.unsplash.com/random",
         imageTitle: "Image Title",
         description: "This is the card description"
-      },
-      {
-        heading: "Heading2",
-        image: "https://source.unsplash.com/random",
-        imageTitle: "Image Title",
-        description: "This is the card description"
-      },
-      {
-        heading: "Heading3",
-        image: "https://source.unsplash.com/random",
-        imageTitle: "Image Title",
-        description: "This is the card description"
       }
     ]
   };
+
+  useEffect(() => {
+    axios.get("https://www.instagram.com/kshaw131/?__a=1").then(result => {
+      // setData(JSON.stringify(result.data));
+
+      const profile = result.data.graphql.user;
+      const username = profile.full_name;
+      const feed = profile.edge_owner_to_timeline_media.edges as [];
+
+      let parsed = Array<InstagramPost>();
+
+      feed.forEach((post, i) =>
+        parsed.push({
+          //@ts-ignore
+          id: post.node.id,
+          //@ts-ignore
+          caption: post.node.edge_media_to_caption.edges[0].text,
+          //@ts-ignore
+          image: post.node.thumbnail_src
+        })
+      );
+
+      console.log(parsed);
+
+      setData(parsed);
+    });
+  }, []);
 
   return (
     <React.Fragment>
@@ -70,21 +94,20 @@ export const Home = () => {
       <main>
         <Header />
         <Container className={styles.cardGrid} maxWidth="md">
-          {/* End hero unit */}
           <Grid container spacing={4}>
-            {state.cards.map(card => (
-              <Grid item key={card.heading} xs={12} sm={6} md={4}>
+            {data.map(post => (
+              <Grid item key={post.id} xs={12} sm={6} md={4}>
                 <Card className={styles.card}>
                   <CardMedia
                     className={styles.cardMedia}
-                    image={card.image}
-                    title={card.imageTitle}
+                    image={post.image}
+                    title={post.image}
                   />
                   <CardContent className={styles.cardContent}>
                     <Typography gutterBottom variant="h5" component="h2">
-                      {card.heading}
+                      {post.id}
                     </Typography>
-                    <Typography>{card.description}</Typography>
+                    <Typography>{post.caption}</Typography>
                   </CardContent>
                   <CardActions>
                     <Button size="small" color="primary">
@@ -97,7 +120,6 @@ export const Home = () => {
           </Grid>
         </Container>
       </main>
-      {/* End footer */}
     </React.Fragment>
   );
 };
