@@ -50,43 +50,27 @@ export const Home = () => {
   const styles = useStyles();
   const [data, setData] = useState(Array<InstagramPost>());
 
-  const state = {
-    cards: [
-      {
-        heading: "Heading",
-        image: "https://source.unsplash.com/random",
-        imageTitle: "Image Title",
-        description: "This is the card description"
-      }
-    ]
-  };
-
   useEffect(() => {
     axios.get("https://www.instagram.com/kshaw131/?__a=1").then(result => {
-      // setData(JSON.stringify(result.data));
+      const feed = result.data.graphql.user.edge_owner_to_timeline_media
+        .edges as [];
 
-      const profile = result.data.graphql.user;
-      const username = profile.full_name;
-      const feed = profile.edge_owner_to_timeline_media.edges as [];
-
-      let parsed = Array<InstagramPost>();
-
-      feed.forEach((post, i) =>
-        parsed.push({
+      const parsed = feed.map(post => {
+        return {
           //@ts-ignore
           id: post.node.id,
           //@ts-ignore
-          caption: post.node.edge_media_to_caption.edges[0].text,
+          caption: post.node.edge_media_to_caption.edges[0].node.text,
           //@ts-ignore
           image: post.node.thumbnail_src
-        })
-      );
-
-      console.log(parsed);
+        };
+      });
 
       setData(parsed);
     });
   }, []);
+
+  const showModal = (post: InstagramPost) => {};
 
   return (
     <React.Fragment>
@@ -104,13 +88,14 @@ export const Home = () => {
                     title={post.image}
                   />
                   <CardContent className={styles.cardContent}>
-                    <Typography gutterBottom variant="h5" component="h2">
-                      {post.id}
-                    </Typography>
                     <Typography>{post.caption}</Typography>
                   </CardContent>
                   <CardActions>
-                    <Button size="small" color="primary">
+                    <Button
+                      size="small"
+                      color="primary"
+                      onClick={post => showModal}
+                    >
                       View
                     </Button>
                   </CardActions>
